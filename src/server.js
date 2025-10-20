@@ -3,7 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const courseEndpoints = require('./endpoints/course');
 const studentEndpoints = require('./endpoints/student');
-const notFoundHandler = require('./middleware/notFoundHandler')
+const authEndpoints = require('./endpoints/auth');
+const notFoundHandler = require('./middleware/notFoundHandler');
+const isAuthenticated = require('./middleware/authSecurity');
 
 
 dotenv.config();
@@ -15,11 +17,10 @@ expressApp.use(
     express.json()
 );
 
+expressApp.use('/api', authEndpoints);
+expressApp.use(isAuthenticated)
 expressApp.use('/api', courseEndpoints);
 expressApp.use('/api', studentEndpoints);
-
-
-
 
 
 expressApp.use(notFoundHandler);
