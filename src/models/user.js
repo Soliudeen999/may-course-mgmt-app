@@ -9,6 +9,6 @@ const userTable = mongoose.Schema({
     created_at : {type : Date, default : Date.now()}
 })
 
-const model = mongoose.Model('User', userTable);
+const model = mongoose.model('User', userTable);
 
 module.exports = model

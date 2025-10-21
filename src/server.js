@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const courseEndpoints = require('./endpoints/course');
 const studentEndpoints = require('./endpoints/student');
 const authEndpoints = require('./endpoints/auth');
+const V2authEndpoints = require('./endpoints/auth_routes');
 const notFoundHandler = require('./middleware/notFoundHandler');
 const isAuthenticated = require('./middleware/authSecurity');
 
@@ -18,6 +19,7 @@ expressApp.use(
 );
 
 expressApp.use('/api', authEndpoints);
+expressApp.use('/api/v2', V2authEndpoints);
 expressApp.use(isAuthenticated)
 expressApp.use('/api', courseEndpoints);
 expressApp.use('/api', studentEndpoints);

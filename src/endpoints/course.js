@@ -3,12 +3,12 @@ const express = require('express')
 
 const expressApp = express.Router();
 
-expressApp.get('/courses-from-db', async (req, res) => {
+expressApp.get('/courses', async (req, res) => {
     const courses = await courseModel.find();
     return res.json(courses)
 })
 
-expressApp.post('/add-course-to-db', async(req, res) => {
+expressApp.post('/courses', async(req, res) => {
     const { title, description, duration, price, tutor} = req.body;
 
     const newCourse = new courseModel({

@@ -1,7 +1,8 @@
-const fs = require('fs')
+const jwt = require('jsonwebtoken')
 
-const isAuthenticated = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
     let sec =  req.header('Authorization')
+    const JWT_HASH_SECRET = process.env.JWT_HASH_SECRET
 
     if(!sec){
         return res.status(301).json({
@@ -18,20 +19,23 @@ const isAuthenticated = (req, res, next) => {
     }
 
     sec = split[1];
+    console.log(sec, JWT_HASH_SECRET)
+    try{
+        const jwtInfo = jwt.verify(sec, JWT_HASH_SECRET)
 
-    let authSecrets = fs.readFileSync(__dirname + '/../data/auth_keys.json', 'utf8')
-    authSecrets = JSON.parse(authSecrets);
+        req.user = {
+            email : jwtInfo.email,
+            role : jwtInfo.role,
+            school : jwtInfo.sch
+        }
 
-    const user = authSecrets.secrets.find((secret) => secret.sec === sec)
-
-    if(!user)
+        next()
+    }catch(err){
+        console.log(err)
         return res.status(400).json({
             message : "Invalid access secret"
         })
-
-    req.user_email = user.email
-
-    next()
+    }
 }
 
-module.exports = isAuthenticated
+module.exports = authMiddleware
