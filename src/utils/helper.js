@@ -1,5 +1,15 @@
-const multiplyNumbers = (a, b) => {
-    return a * b;
+const apiResponse = (res, details = {}) => {
+    status_code = details?.status_code || 200
+    message = details?.message || 'Request Completed',
+    data = details?.data || undefined
+
+    return res.status(status_code).json({
+        status : status_code >= 200 && status_code <= 299,
+        message,
+        data
+    })
 }
 
-export default { multiplyNumbers }
+module.exports = {
+    apiResponse
+}

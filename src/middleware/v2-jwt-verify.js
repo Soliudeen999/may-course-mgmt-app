@@ -20,7 +20,7 @@ const V2authMiddleware = async (req, res, next) => {
     }
 
     sec = split[1];
-    console.log(sec, JWT_HASH_SECRET)
+
     try{
         const jwtInfo = jwt.verify(sec, JWT_HASH_SECRET)
 
