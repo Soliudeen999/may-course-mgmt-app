@@ -26,7 +26,9 @@ const NdleaCheckpointCheck = (request, response, next) => {
 
             console.log('NDLEA Checkpoint Passed');
             next();
+            return;
         }
+
         return response.status(403).json({ message: 'Access denied: Unauthorized IP address' });
     }
 

@@ -1,14 +1,14 @@
 const PoliceCheckpointMiddleware = (request, response, next) => {
-        const load = request?.loadOntransit
-        if (load && load.weight > 300){
-            return response.status(403).json({
-                message : 'You are not allowed to carry more than 600KG of items into our state'
-            })
-        }
+  const load = request?.loadOntransit;
 
-        console.log('You just passed POLICE Checkpoint')
+  if (load && load.weight > 300) {
+    return response.status(403).json({
+      message: 'You are not allowed to carry more than 300KG of items into our state',
+    });
+  }
 
-        next()
-    }
+  console.log('You just passed POLICE Checkpoint');
+  next();
+};
 
-    module.exports = PoliceCheckpointMiddleware
+module.exports = PoliceCheckpointMiddleware;

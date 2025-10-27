@@ -11,6 +11,7 @@ const FRSCCheckpointMiddleware = (request, response, next) => {
             console.log('FRSC Checkpoint Passed');
 
             next()
+            return;
         }
 
         return response.status(403).json({
