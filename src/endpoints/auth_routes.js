@@ -4,17 +4,23 @@ const UserModel = require('./../models/user')
 const courseModel = require('./../models/course')
 const bcrypt = require('bcrypt');
 const V2authMiddleware = require('../middleware/v2-jwt-verify');
-const { apiResponse } = require("./../utils/helper")
+const { apiResponse, validationResponse } = require("./../utils/helper");
+const { body, validationResult } = require('express-validator');
+const { LoginRequestValidator, RegisterRequestValidator } = require('../requests/auth_validations');
 
 const app = express.Router();
 
-app.post('/login', async (request, response) => {
-
-    const {email, password} = request.body || {email : undefined, password : undefined};
+app.post('/login', 
+    LoginRequestValidator,
+    async (request, response) => {
     
-    if(!email || !password) 
-        return apiResponse(response, {status_code : 400, message : "Invalid email or password"})
+    const errors = validationResult(request);
 
+    if(!errors.isEmpty()){
+        return validationResponse(res, errors)
+    } 
+
+    const {email, password} = request.body
     const user = await UserModel.findOne({email : email}).exec();
 
     if(!user) 
@@ -51,35 +57,22 @@ app.post('/login', async (request, response) => {
 })
 
 
-app.post('/register', async (req, res) => {
-    let first_name = req.body?.first_name
-    let email = req.body?.email
-    let phone = req.body?.phone
-    let password = req.body?.password
-    let course_id = req.body?.course_id
+app.post('/register',
+    RegisterRequestValidator,
+    async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return validationResponse(res, errors)
+    } 
 
-    if(!first_name || !email || !phone || !password || !course_id){
-        return res.status(400).json({message : "Validation error, please check the form inputs"})
-    }
-
-    let isExist = await UserModel.findOne({email: email}).exec();
-    if (isExist)
-        return res.status(400).json({
-            message : "Email already exists"
-        })
+    const { email, first_name, last_name, phone, password, course_id } = req.body;
 
     const course = await courseModel.findById(course_id)
-
-    if(!course){
-        return apiResponse(res, {
-            message : "Invalid Course Id",
-            status_code : 422
-        })
-    }
     
     const newUser= new UserModel({
         email : email,
         first_name : first_name,
+        last_name : last_name,
         phone : phone,
         role : 'student',
         password : await bcrypt.hash(password, 12),

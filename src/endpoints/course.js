@@ -29,8 +29,8 @@ expressApp.get('/courses/:course_id', async (req, res) => {
     return res.json(course)
 })
 
-// expressApp.use(mustBeAdmin)
-// expressApp.use(V2authMiddleware)
+expressApp.use(mustBeAdmin)
+expressApp.use(V2authMiddleware)
 
 expressApp.post('/courses', mustBeAdmin, async(req, res) => {
     const { title, description, duration, price, tutor} = req.body;
